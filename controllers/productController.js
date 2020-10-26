@@ -1,15 +1,11 @@
 const Product = require('../models/productModels')
-const { getPostData } = require('../util')
+const { getPostData, response } = require('../util')
 
 // GET /api/products
 const getProducts = async (_, res) => {
     try {
         const products = await Product.findAll()
-        res.writeHead(200, {
-            'Content-Type': 'application/json',
-            'Owned-By': 'Niels-da-Piels'
-        })
-        res.end(JSON.stringify(products))  
+        response(res, 200, JSON.stringify(products))
     } catch (err) {
         console.log(err)
     }
@@ -20,19 +16,10 @@ const getProduct = async (_, res, id) => {
     try {
         const product = await Product.findById(id)
         if (!product) {
-            res.writeHead(404, {
-                'Content-Type': 'application/json',
-                'Owned-By': 'Niels-da-Piels'
-            })
-            res.end(JSON.stringify({message: `Product ${id} not found`}))
+            response(res, 404, JSON.stringify({message: `Product ${id} not found`}))
         } else {
-            res.writeHead(200, {
-                'Content-Type': 'application/json',
-                'Owned-By': 'Niels-da-Piels'
-            })
-            res.end(JSON.stringify(product))
+            response(res, 200, JSON.stringify(product))
         }
-        res.end(JSON.stringify(product))  
     } catch (err) {
         console.log(err)
     }
@@ -51,8 +38,7 @@ const createProduct = async (req, res) => {
                 title, description, price
             }
             const newProduct = await Product.create(product)
-            res.writeHead(201, { 'Content-Type': 'application/json' })
-            res.end(JSON.stringify(newProduct))
+            response(res, 201, JSON.stringify(newProduct))
         })
     } catch (err) {
         console.log(err)
@@ -64,27 +50,18 @@ const updateProduct = async (req, res, id) => {
     try {
         const product = await Product.findById(id)
         if (!product) {
-            res.writeHead(404, {
-                'Content-Type': 'application/json',
-                'Owned-By': 'Niels-da-Piels'
-            })
-            res.end(JSON.stringify({message: `Product ${id} not found`}))
+            response(res, 404, JSON.stringify({message: `Product ${id} not found`}))
         } else {
             const body = await getPostData(req)
-            console.log('BODY', body)
             const { title, description, price } = JSON.parse(body)
-            // below logic enables updating e.g. only a single field
+            // below logic enables updating only relevant field(s)
             const productData = {
                 title: title || product.title,
                 description: description || product.description,
                 price: price || product.price
             }
             updatedProduct = await Product.update(id, productData)
-            res.writeHead(200, {
-                'Content-Type': 'application/json',
-                'Owned-By': 'Niels-da-Piels'                
-            })
-            res.end(JSON.stringify(updatedProduct))
+            response(res, 200, JSON.stringify(updatedProduct))
         }
     } catch (err) {
         console.log(err)
@@ -92,22 +69,14 @@ const updateProduct = async (req, res, id) => {
 }
 
 // DELETE /api/products/:id
-const deleteProduct = async (req, res, id) => {
+const deleteProduct = async (_, res, id) => {
     try {
         const product = await Product.findById(id)
         if (!product) {
-            res.writeHead(404, {
-                'Content-Type': 'application/json',
-                'Owned-By': 'Niels-da-Piels'
-            })
-            res.end(JSON.stringify({message: `Product ${id} not found`}))
+            response(res, 404, JSON.stringify({message: `Product ${id} not found`}))
         } else {
             await Product.remove(id)
-            res.writeHead(200, {
-                'Content-Type': 'application/json',
-                'Owned-By': 'Niels-da-Piels'
-            })
-            res.end(JSON.stringify({message: `Product ${id} deleted`}))
+            response(res, 200, JSON.stringify({message: `Product ${id} deleted`}))
         }
         res.end(JSON.stringify(product))  
     } catch (err) {
