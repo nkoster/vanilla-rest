@@ -23,6 +23,16 @@ const create = product => {
     })
 }
 
+const update = (id, product) => {
+    return new Promise((yes, no) => {
+        const index = products.findIndex(p => p.id === id)
+        console.log('FOUND', products[index])
+        products[index] = { id, ...product }
+        writeDataToFile('./data/products.json', products)
+        yes(products[index])
+    })
+}
+
 module.exports = {
-    findAll, findById, create
+    findAll, findById, create, update
 }
