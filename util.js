@@ -7,21 +7,26 @@ const writeDataToFile = (filename, content) => {
 }
 
 const getPostData = req => {
-    return new Promise((yes, no) => {
+    return new Promise((resolve, reject) => {
         try {
             let body = ''
             req.on('data', chunk => {
                 body += chunk.toString()
             })
             req.on('end', _ => {
-                yes(body)
+                resolve(body)
             })
         } catch (err) {
-            no(err)
+            reject(err)
         }
     })
 }
 
+const response = (res, status, payload) => {
+    res.writeHead(status, { 'Content-Type': 'application/json' })
+    res.end(payload)    
+}
+
 module.exports = {
-    writeDataToFile, getPostData
+    writeDataToFile, getPostData, response
 }
