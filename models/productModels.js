@@ -3,39 +3,39 @@ const { v4: uuid } = require('uuid')
 const { writeDataToFile } = require('../util')
 
 const findAll = _ => {
-    return new Promise(always => {
-        always(products)
+    return new Promise(resolve => {
+        resolve(products)
     })
 }
 
 const findById = id => {
-    return new Promise(always => {
-        always(products.find(p => p.id === id))
+    return new Promise(resolve => {
+        resolve(products.find(p => p.id === id))
     })
 }
 
 const create = product => {
-    return new Promise(always => {
+    return new Promise(resolve => {
         const newProduct = { id: uuid(), ...product }
         products.push(newProduct)
         writeDataToFile('./data/products.json', products)
-        always(newProduct)
+        resolve(newProduct)
     })
 }
 
 const update = (id, product) => {
-    return new Promise(always => {
+    return new Promise(resolve => {
         const index = products.findIndex(p => p.id === id)
         products[index] = { id, ...product }
         writeDataToFile('./data/products.json', products)
-        always(products[index])
+        resolve(products[index])
     })
 }
 
 const remove = id => {
-    return new Promise(always => {
+    return new Promise(resolve => {
         writeDataToFile('./data/products.json', products.filter(p => p.id !== id))
-        always(products)
+        resolve()
     })
 }
 
