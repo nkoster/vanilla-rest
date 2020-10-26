@@ -3,36 +3,44 @@ const { v4: uuid } = require('uuid')
 const { writeDataToFile } = require('../util')
 
 const findAll = _ => {
-    return new Promise((yes, no) => {
-        yes(products)
+    return new Promise(always => {
+        always(products)
     })
 }
 
 const findById = id => {
-    return new Promise((yes, no) => {
-        yes(products.find(product => product.id === id))
+    return new Promise(always => {
+        always(products.find(p => p.id === id))
     })
 }
 
 const create = product => {
-    return new Promise((yes, no) => {
+    return new Promise(always => {
         const newProduct = { id: uuid(), ...product }
         products.push(newProduct)
         writeDataToFile('./data/products.json', products)
-        yes(newProduct)
+        always(newProduct)
     })
 }
 
 const update = (id, product) => {
-    return new Promise((yes, no) => {
+    return new Promise(always => {
         const index = products.findIndex(p => p.id === id)
-        console.log('FOUND', products[index])
         products[index] = { id, ...product }
         writeDataToFile('./data/products.json', products)
-        yes(products[index])
+        always(products[index])
+    })
+}
+
+const remove = id => {
+    return new Promise(always => {
+        const index = products.findIndex(p => p.id === id)
+        products.splice(index, 1)
+        writeDataToFile('./data/products.json', products)
+        always(products)
     })
 }
 
 module.exports = {
-    findAll, findById, create, update
+    findAll, findById, create, update, remove
 }
