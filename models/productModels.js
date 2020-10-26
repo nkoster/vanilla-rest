@@ -34,9 +34,7 @@ const update = (id, product) => {
 
 const remove = id => {
     return new Promise(always => {
-        const index = products.findIndex(p => p.id === id)
-        products.splice(index, 1)
-        writeDataToFile('./data/products.json', products)
+        writeDataToFile('./data/products.json', products.filter(p => p.id !== id))
         always(products)
     })
 }
